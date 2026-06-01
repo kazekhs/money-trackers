@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/select'
 import { addTransaction, formatIDR, parseIDR, scanReceipt } from '@/services/api'
 import { classifyReceipt, type ReceiptClassification } from '@/services/classifierApi'
+import { type OcrResult } from '@/services/api'
 import { toast } from 'sonner'
 import { ArrowLeft, Info, Loader2, Upload } from 'lucide-react'
 
@@ -69,7 +70,7 @@ function AddTx() {
   const [note, setNote] = useState('')
   const [saving, setSaving] = useState(false)
   const [scanningReceipt, setScanningReceipt] = useState(false)
-  const [ocrResult, setOcrResult] = useState<OcrResult | null>(null)
+  const [_ocrResult, setOcrResult] = useState<OcrResult | null>(null)
   const [classification, setClassification] = useState<ReceiptClassification | null>(null)
 
   const categories = type === 'income' ? CATEGORIES_INCOME : CATEGORIES_EXPENSE
