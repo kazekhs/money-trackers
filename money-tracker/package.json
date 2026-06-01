@@ -2,6 +2,9 @@
   "name": "money-tracker",
   "private": true,
   "version": "0.0.0",
+  "engines": {
+    "node": ">=20"
+  },
   "type": "module",
   "scripts": {
     "dev": "concurrently \"vite\" \"nodemon server/index.js\"",
