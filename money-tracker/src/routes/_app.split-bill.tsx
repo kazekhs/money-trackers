@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Camera, Upload, X, Loader2, Plus, FileDown,
   UserCircle2, History, Trash2, Check, Pencil, PlusCircle, Receipt,
-  FileText, Menu, Circle, CheckCircle2, Sparkles, BookmarkCheck, Wallet
+  FileText, Menu, Circle, CheckCircle2, BookmarkCheck, Wallet
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScanBarcode } from "lucide-react";
@@ -490,7 +490,6 @@ tbody td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f5f3ff}
       {classification && (
         <div className="rounded-[32px] border border-primary/20 bg-white dark:bg-zinc-950 p-4 shadow-[0_8px_30px_-4px_rgba(139,92,246,0.06)]">
           <div className="flex items-center gap-2 mb-1">
-            <Sparkles className="h-4 w-4 text-primary" />
             <span className="text-sm font-bold text-slate-800 dark:text-slate-200">Hasil Klasifikasi AI</span>
           </div>
           <div className="flex flex-wrap items-center justify-between gap-2 mt-2">
