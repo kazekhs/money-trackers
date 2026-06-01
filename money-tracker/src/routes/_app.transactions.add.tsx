@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
 } from '@/components/ui/select'
-import { addTransaction, formatIDR, parseIDR, scanReceipt, type OcrResult } from '@/services/api'
+import { addTransaction, formatIDR, parseIDR, scanReceipt } from '@/services/api'
 import { classifyReceipt, type ReceiptClassification } from '@/services/classifierApi'
 import { toast } from 'sonner'
 import { ArrowLeft, Info, Loader2, Upload } from 'lucide-react'
