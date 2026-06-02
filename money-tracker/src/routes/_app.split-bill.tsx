@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Camera, Upload, X, Loader2, Plus, FileDown,
   UserCircle2, History, Trash2, Check, Pencil, PlusCircle, Receipt,
-  FileText, Menu, Circle, CheckCircle2, BookmarkCheck, Wallet
+  FileText, Circle, CheckCircle2, BookmarkCheck, Wallet
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScanBarcode } from "lucide-react";
@@ -77,29 +77,11 @@ function SplitBill() {
 
   return (
     <div className="space-y-5">
-      {/* Mobile Page Header */}
-      <div className="md:hidden relative flex items-center justify-center min-h-[50px] mb-5">
-        <button
-          type="button"
-          onClick={() => window.dispatchEvent(new CustomEvent('open-sidebar'))}
-          className="absolute left-0 flex h-10 w-10 items-center justify-center rounded-full text-foreground hover:bg-muted/20 transition-colors"
-          aria-label="Open navigation"
-        >
-          <Menu className="h-6 w-6" />
-        </button>
-        <div className="text-center">
-          <h1 className="text-xl font-bold tracking-tight">Split Bill</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Foto struk, ekstrak otomatis, lalu bagi adil
-          </p>
-        </div>
-      </div>
-
-      {/* Desktop Page Header */}
-      <div className="hidden md:block">
+      {/* Page Header */}
+      <div>
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Split Bill</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Scan struk, atur pembagian, dan tagih teman dalam hitungan detik.
+        <p className="text-sm text-muted-foreground mt-1 break-words">
+          Scan struk, atur pembagian, dan tagih teman.
         </p>
       </div>
 
@@ -823,10 +805,13 @@ function HistoryTab({ history, loading, recordedIds, onDelete, onView, onRecorde
       {history.map(r => {
         const date = new Date(r.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
         const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        const myAmount = (r.person_totals as Record<string, number>)[r.people[0]?.id] ?? 0
+        const personTotalsMap = r.person_totals as Record<string, number>
+        const myPerson = r.people.find(p => p.name === "Kamu") ?? r.people[0]
+        const myAmount = myPerson ? (personTotalsMap[myPerson.id] ?? 0) : 0
         const isRecorded = recordedIds.has(r.id)
         return (
           <div key={r.id} className="rounded-3xl border border-border/60 bg-card p-4 shadow-[var(--shadow-card)]">
+            {/* Top row: info + total + delete */}
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <p className="font-semibold truncate">{r.title || r.filename}</p>
@@ -834,43 +819,52 @@ function HistoryTab({ history, loading, recordedIds, onDelete, onView, onRecorde
                 <div className="flex flex-wrap gap-1 mt-2">
                   {r.people.map(p => (
                     <span key={p.id} className="inline-flex items-center gap-1 text-xs bg-muted rounded-full px-2 py-0.5">
-                      <span className="h-2 w-2 rounded-full" style={{ background: p.color }} />
-                      {p.name} · {formatIDR((r.person_totals as Record<string, number>)[p.id] ?? 0)}
+                      <span className="h-2 w-2 rounded-full shrink-0" style={{ background: p.color }} />
+                      <span className="truncate max-w-[80px] sm:max-w-none">{p.name}</span>
+                      <span className="shrink-0">· {formatIDR((r.person_totals as Record<string, number>)[p.id] ?? 0)}</span>
                     </span>
                   ))}
                 </div>
               </div>
               <div className="flex flex-col items-end gap-1.5 shrink-0">
                 <span className="font-bold text-sm">{formatIDR(r.total_belanja)}</span>
-                <div className="flex gap-1">
-                  <Button size="sm" variant="ghost" className="h-8 rounded-xl text-xs px-3" onClick={() => onView(r)}>Lihat</Button>
-                  <Button size="sm" variant="ghost"
-                    className="h-8 w-8 rounded-xl p-0 text-muted-foreground hover:text-destructive"
-                    disabled={deleting === r.id}
-                    onClick={async () => { setDeleting(r.id); await onDelete(r.id); setDeleting(null); }}>
-                    {deleting === r.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-                  </Button>
-                </div>
-                {/* Tombol Catat ke Transaksi */}
-                {isRecorded ? (
-                  <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-                    <BookmarkCheck className="h-3.5 w-3.5" /> Sudah dicatat
-                  </span>
-                ) : (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7 rounded-full text-xs px-3 border-[#8b5cf6]/40 text-[#7c3aed] hover:bg-[#ede9fe]/50 dark:text-[#a78bfa]"
-                    disabled={recording === r.id || myAmount === 0}
-                    onClick={() => handleRecord(r)}
-                  >
-                    {recording === r.id
-                      ? <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                      : <Wallet className="h-3 w-3 mr-1" />}
-                    Catat ({formatIDR(myAmount)})
-                  </Button>
-                )}
+                <Button size="sm" variant="ghost"
+                  className="h-8 w-8 rounded-xl p-0 text-muted-foreground hover:text-destructive"
+                  disabled={deleting === r.id}
+                  onClick={async () => { setDeleting(r.id); await onDelete(r.id); setDeleting(null); }}>
+                  {deleting === r.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+                </Button>
               </div>
+            </div>
+
+            {/* Bottom row: action buttons */}
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border/40">
+              <Button
+                size="sm"
+                variant="outline"
+                className="flex-1 h-9 rounded-full text-xs font-semibold"
+                onClick={() => onView(r)}
+              >
+                Lihat Detail
+              </Button>
+              {isRecorded ? (
+                <span className="inline-flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400 font-semibold px-3">
+                  <BookmarkCheck className="h-3.5 w-3.5 shrink-0" /> Sudah dicatat
+                </span>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1 h-9 rounded-full text-xs font-semibold border-[#8b5cf6]/40 text-[#7c3aed] hover:bg-[#ede9fe]/50 dark:text-[#a78bfa]"
+                  disabled={recording === r.id || myAmount === 0}
+                  onClick={() => handleRecord(r)}
+                >
+                  {recording === r.id
+                    ? <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                    : <Wallet className="h-3 w-3 mr-1 shrink-0" />}
+                  Catat ({formatIDR(myAmount)})
+                </Button>
+              )}
             </div>
           </div>
         );

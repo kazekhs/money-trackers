@@ -89,7 +89,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     navigate({ to: '/login' })
   }
 
-  const isDashboard = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/transactions') || location.pathname.startsWith('/budgets') || location.pathname.startsWith('/goals') || location.pathname.startsWith('/reports') || location.pathname.startsWith('/split-bill')
+  const isDashboard = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/transactions') || location.pathname.startsWith('/budgets') || location.pathname.startsWith('/goals') || location.pathname.startsWith('/reports')
 
   return (
     <div className="min-h-screen bg-background flex">
