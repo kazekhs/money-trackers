@@ -840,7 +840,7 @@ function HistoryTab({ history, loading, recordedIds, onDelete, onView, onRecorde
             {/* Bottom row: action buttons */}
             <div className="mt-3 pt-3 border-t border-border/40" style={{display:'flex', gap:'8px'}}>
               <button
-                style={{flex:'0 0 calc(50% - 4px)', height:'36px', borderRadius:'999px', fontSize:'12px', fontWeight:600, border:'1px solid #e2e8f0', background:'white', cursor:'pointer'}}
+                style={{flex:'0 0 calc(50% - 4px)', height:'36px', borderRadius:'999px', fontSize:'12px', fontWeight:600, border:'1px solid var(--border)', background:'var(--background)', color:'var(--foreground)', cursor:'pointer'}}
                 onClick={() => onView(r)}
               >
                 Lihat Detail
@@ -851,7 +851,7 @@ function HistoryTab({ history, loading, recordedIds, onDelete, onView, onRecorde
                 </div>
               ) : (
                 <button
-                  style={{flex:'0 0 calc(50% - 4px)', height:'36px', borderRadius:'999px', fontSize:'12px', fontWeight:600, border:'1px solid rgba(139,92,246,0.4)', background:'transparent', color:'#7c3aed', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'4px'}}
+                  style={{flex:'0 0 calc(50% - 4px)', height:'36px', borderRadius:'999px', fontSize:'12px', fontWeight:600, border:'1px solid rgba(139,92,246,0.4)', background:'transparent', color:'#a78bfa', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'4px', overflow:'hidden', boxSizing:'border-box'}}
                   disabled={recording === r.id || myAmount === 0}
                   onClick={() => handleRecord(r)}
                 >
