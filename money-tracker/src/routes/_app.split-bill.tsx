@@ -838,27 +838,27 @@ function HistoryTab({ history, loading, recordedIds, onDelete, onView, onRecorde
             </div>
 
             {/* Bottom row: action buttons */}
-            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px', marginTop:'12px', paddingTop:'12px', borderTop:'1px solid var(--border)'}}>
+            <div className="mt-3 pt-3 border-t border-border/40 grid grid-cols-2 gap-2">
               <button
-                style={{height:'36px', borderRadius:'999px', fontSize:'12px', fontWeight:600, border:'1px solid var(--border)', background:'var(--background)', cursor:'pointer'}}
+                className="h-9 rounded-full text-xs font-semibold border border-input bg-background hover:bg-accent"
                 onClick={() => onView(r)}
               >
                 Lihat Detail
               </button>
               {isRecorded ? (
-                <div style={{display:'flex', alignItems:'center', justifyContent:'center', gap:'4px', fontSize:'12px', color:'#059669', fontWeight:600}}>
-                  <BookmarkCheck style={{width:'14px', height:'14px', flexShrink:0}} /> Sudah dicatat
+                <div className="flex items-center justify-center gap-1 text-xs text-emerald-600 font-semibold">
+                  <BookmarkCheck className="h-3.5 w-3.5 shrink-0" /> Sudah dicatat
                 </div>
               ) : (
                 <button
-                  style={{height:'36px', borderRadius:'999px', fontSize:'12px', fontWeight:600, border:'1px solid rgba(139,92,246,0.4)', background:'transparent', color:'#7c3aed', cursor: recording === r.id || myAmount === 0 ? 'not-allowed' : 'pointer', opacity: recording === r.id || myAmount === 0 ? 0.5 : 1, display:'flex', alignItems:'center', justifyContent:'center', gap:'4px', overflow:'hidden'}}
+                  className="h-9 rounded-full text-xs font-semibold border border-[#8b5cf6]/40 text-[#7c3aed] hover:bg-[#ede9fe]/50 flex items-center justify-center gap-1 overflow-hidden disabled:opacity-50"
                   disabled={recording === r.id || myAmount === 0}
                   onClick={() => handleRecord(r)}
                 >
                   {recording === r.id
-                    ? <Loader2 style={{width:'12px', height:'12px', flexShrink:0}} className="animate-spin" />
-                    : <Wallet style={{width:'12px', height:'12px', flexShrink:0}} />}
-                  <span style={{overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>Catat ({formatIDR(myAmount)})</span>
+                    ? <Loader2 className="h-3 w-3 animate-spin shrink-0" />
+                    : <Wallet className="h-3 w-3 shrink-0" />}
+                  <span className="truncate">Catat ({formatIDR(myAmount)})</span>
                 </button>
               )}
             </div>
