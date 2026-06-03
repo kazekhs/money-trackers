@@ -307,7 +307,7 @@ function ScanTab({ onSaved }: { onSaved: () => void }) {
     setIsSaving(true);
     try {
       await saveSplitBill({
-        title: title.trim() || `Split ${selectedFile.name}`,
+        title: title.trim() || classification?.predicted_category || `Split ${selectedFile.name}`,
         filename: selectedFile.name,
         total_belanja: grandTotal,
         items,
