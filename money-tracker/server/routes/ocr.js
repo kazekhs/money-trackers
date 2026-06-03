@@ -50,6 +50,12 @@ router.post('/', upload.single('file'), async (req, res) => {
     }
 
     const result = await ocrResponse.json()
+    if (!result.items || !Array.isArray(result.items)) {
+      result.items = []
+    }
+    if (!result.total_belanja) {
+      result.total_belanja = 0
+    }
 
     // log success
     if (userId) {
