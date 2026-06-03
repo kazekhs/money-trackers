@@ -810,7 +810,7 @@ function HistoryTab({ history, loading, recordedIds, onDelete, onView, onRecorde
         const myAmount = myPerson ? (personTotalsMap[myPerson.id] ?? 0) : 0
         const isRecorded = recordedIds.has(r.id)
         return (
-          <div key={r.id} className="rounded-3xl border border-border/60 bg-card p-4 shadow-[var(--shadow-card)]">
+          <div key={r.id} className="rounded-3xl border border-border/60 bg-card p-4 shadow-[var(--shadow-card)] overflow-hidden">
             {/* Top row: info + total + delete */}
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
@@ -855,7 +855,7 @@ function HistoryTab({ history, loading, recordedIds, onDelete, onView, onRecorde
                 <Button
                   size="sm"
                   variant="outline"
-                  className="flex-1 h-9 rounded-full text-xs font-semibold border-[#8b5cf6]/40 text-[#7c3aed] hover:bg-[#ede9fe]/50 dark:text-[#a78bfa]"
+                  className="flex-1 h-9 rounded-full text-xs font-semibold border-[#8b5cf6]/40 text-[#7c3aed] hover:bg-[#ede9fe]/50 dark:text-[#a78bfa] min-w-0 truncate"
                   disabled={recording === r.id || myAmount === 0}
                   onClick={() => handleRecord(r)}
                 >

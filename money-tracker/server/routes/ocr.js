@@ -6,7 +6,7 @@ const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 
 const upload = multer({ storage: multer.memoryStorage() })
-const DEFAULT_OCR_ENDPOINT = 'https://luxdream-receipt-ocr-api.hf.space/ocr/receipt'
+const DEFAULT_OCR_ENDPOINT = 'https://luxdream-receipt-ocr-gemini.hf.space'
 
 function getOcrEndpoint() {
   const configured = (process.env.OCR_SERVICE_URL || DEFAULT_OCR_ENDPOINT).replace(/\/+$/, '')
