@@ -439,6 +439,7 @@ tbody td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f5f3ff}
               </div>
               <p className="font-bold text-slate-800 dark:text-slate-200">Upload struk belanja</p>
               <p className="text-xs text-muted-foreground mt-1 max-w-[240px] mx-auto">Tap untuk ambil foto atau pilih dari galeri</p>
+              <p className="text-xs text-muted-foreground mt-1 max-w-[240px] mx-auto">Pastikan foto tidak blur, sesuai frame, dan teks struk terbaca jelas</p>
               <span className="mt-4 inline-flex items-center gap-1.5 text-xs text-[#7c3aed] font-bold hover:underline">
                 <Upload className="h-3.5 w-3.5" /> Pilih file
               </span>
