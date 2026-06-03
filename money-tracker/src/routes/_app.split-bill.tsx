@@ -172,6 +172,7 @@ function ScanTab({ onSaved }: { onSaved: () => void }) {
     setIsScanning(true); setError(null);
     try {
       const result = await scanReceipt(selectedFile);
+      if (!Array.isArray(result?.items)) throw new Error('Format respons OCR tidak valid, coba scan ulang');
       const TAX_KEYWORDS = /service.?charge|pajak|tax|ppn|pb1|vat|servis/i;
       const normalItems: EditableItem[] = [];
       const detectedExtras: ExtraCharge[] = [];
