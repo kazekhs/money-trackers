@@ -13,6 +13,7 @@ import {
   type OcrItem, type SplitBillRecord, formatIDR,
 } from "@/services/api";
 import { classifyReceipt, type ReceiptClassification } from "@/services/classifierApi";
+import { useMobilePageTitle } from "@/hooks/useMobilePageTitle";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/split-bill")({
@@ -61,6 +62,12 @@ function SplitBill() {
   const [historyLoading, setHistoryLoading] = useState(false);
   const [detailRecord, setDetailRecord] = useState<SplitBillRecord | null>(null);
   const [recordedIds, setRecordedIds] = useState<Set<string>>(getRecordedIds);
+  const { setTitle } = useMobilePageTitle();
+
+  useEffect(() => {
+    setTitle("Split Bill", "Foto struk, ekstrak otomatis, lalu bagi adil");
+    return () => setTitle("");
+  }, [setTitle]);
 
   const loadHistory = async () => {
     setHistoryLoading(true);
@@ -77,8 +84,8 @@ function SplitBill() {
 
   return (
     <div className="space-y-5">
-      {/* Page Header */}
-      <div>
+      {/* Page Header - hidden on mobile since navbar shows title */}
+      <div className="hidden md:block">
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Split Bill</h1>
         <p className="text-sm text-muted-foreground mt-1 break-words">
           Scan struk, atur pembagian, dan tagih teman.
@@ -539,7 +546,7 @@ tbody td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f5f3ff}
           </div>
 
           {/* Items */}
-          <div className="rounded-[32px] border border-slate-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-6 shadow-[0_8px_30px_-4px_rgba(139,92,246,0.03)]">
+          <div className="rounded-[32px] border border-slate-100 dark:border-zinc-900 bg-white dark:bg-zinc-950 p-4 sm:p-6 shadow-[0_8px_30px_-4px_rgba(139,92,246,0.03)]">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-bold text-slate-800 dark:text-slate-200">Items</h2>
               <span className="text-xs font-semibold text-muted-foreground">{items.length} item · {formatIDR(subtotal)}</span>
@@ -547,28 +554,30 @@ tbody td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f5f3ff}
             <div className="divide-y divide-slate-100 dark:divide-zinc-900">
               {items.map((item, i) => (
                 <div key={i} className="py-4 space-y-2.5 first:pt-0 last:pb-0">
-                  <div className="flex gap-2 items-center">
+                  <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
                     <input
                       value={item.nama_barang}
                       onChange={e => updateItem(i, 'nama_barang', e.target.value)}
                       className="flex-1 h-11 rounded-full border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 px-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/30"
                       placeholder="Nama item"
                     />
-                    <input
-                      type="number"
-                      min={0}
-                      value={item.total_harga_barang === 0 ? '' : item.total_harga_barang}
-                      onChange={e => updateItem(i, 'total_harga_barang', parseInt(e.target.value) || 0)}
-                      className="w-28 sm:w-32 h-11 rounded-full border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 px-4 text-right text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30"
-                      placeholder="Harga"
-                    />
-                    <button
-                      onClick={() => deleteItem(i)}
-                      className="h-11 w-11 shrink-0 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
-                      aria-label="Hapus item"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="number"
+                        min={0}
+                        value={item.total_harga_barang === 0 ? '' : item.total_harga_barang}
+                        onChange={e => updateItem(i, 'total_harga_barang', parseInt(e.target.value) || 0)}
+                        className="w-full sm:w-32 h-11 rounded-full border border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-950 px-4 text-right text-sm font-bold focus:outline-none focus:ring-2 focus:ring-primary/30"
+                        placeholder="Harga"
+                      />
+                      <button
+                        onClick={() => deleteItem(i)}
+                        className="h-11 w-11 shrink-0 rounded-full flex items-center justify-center text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+                        aria-label="Hapus item"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                   <div className="flex flex-wrap gap-1.5 pl-1">
                     {people.map(p => {
@@ -578,7 +587,7 @@ tbody td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f5f3ff}
                         <button
                           key={p.id}
                           onClick={() => toggleAssign(i, p.id)}
-                          className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold border transition-all shadow-sm ${
+                          className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold border transition-all shadow-sm ${
                             active
                               ? 'bg-[#ede9fe] dark:bg-[#7c3aed]/15 border-[#8b5cf6] text-[#7c3aed] dark:text-[#a78bfa]'
                               : 'bg-[#faf8ff] dark:bg-zinc-900/50 border-violet-100 dark:border-zinc-800 text-slate-600 dark:text-zinc-400 hover:bg-[#ede9fe]/20'
@@ -706,12 +715,12 @@ tbody td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f5f3ff}
                 </div>
               </div>
             </div>
-            <div className="flex gap-3">
-              <Button variant="outline" className="w-1/2 rounded-full h-11 border border-slate-200 bg-white text-slate-900 font-bold hover:bg-slate-50 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 shadow-[var(--shadow-soft)]" onClick={exportPDF} disabled={isExporting}>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button variant="outline" className="w-full sm:w-1/2 rounded-full h-11 border border-slate-200 bg-white text-slate-900 font-bold hover:bg-slate-50 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 shadow-[var(--shadow-soft)]" onClick={exportPDF} disabled={isExporting}>
                 {isExporting ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <FileDown className="h-4 w-4 mr-1.5" />}
                 Export PDF
               </Button>
-              <Button className="w-1/2 rounded-full h-11 bg-[#8b5cf6] text-white font-bold hover:bg-violet-600 shadow-[var(--shadow-soft)]" onClick={handleSave} disabled={isSaving || saved}>
+              <Button className="w-full sm:w-1/2 rounded-full h-11 bg-[#8b5cf6] text-white font-bold hover:bg-violet-600 shadow-[var(--shadow-soft)]" onClick={handleSave} disabled={isSaving || saved}>
                 {saved ? <><Check className="h-4 w-4 mr-1.5" /> Tersimpan!</>
                   : isSaving ? <><Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Menyimpan...</>
                   : "Simpan ke Riwayat"}
@@ -801,7 +810,7 @@ function HistoryTab({ history, loading, recordedIds, onDelete, onView, onRecorde
   );
 
   return (
-    <div className="space-y-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {history.map(r => {
         const date = new Date(r.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
         const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -810,56 +819,64 @@ function HistoryTab({ history, loading, recordedIds, onDelete, onView, onRecorde
         const myAmount = myPerson ? (personTotalsMap[myPerson.id] ?? 0) : 0
         const isRecorded = recordedIds.has(r.id)
         return (
-          <div key={r.id} className="rounded-3xl border border-border/60 bg-card p-4 shadow-[var(--shadow-card)] overflow-hidden">
-            {/* Top row: info + total + delete */}
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold truncate">{r.title || r.filename}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{date} · {time} · {r.items.length} item</p>
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {r.people.map(p => (
-                    <span key={p.id} className="inline-flex items-center gap-1 text-xs bg-muted rounded-full px-2 py-0.5">
-                      <span className="h-2 w-2 rounded-full shrink-0" style={{ background: p.color }} />
-                      <span className="truncate max-w-[80px] sm:max-w-none">{p.name}</span>
-                      <span className="shrink-0">· {formatIDR((r.person_totals as Record<string, number>)[p.id] ?? 0)}</span>
-                    </span>
-                  ))}
+          <div key={r.id} className="flex flex-col justify-between rounded-3xl border border-border/60 bg-card p-4 shadow-[var(--shadow-card)] h-full">
+            <div>
+              {/* Top row: title + total + delete */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm sm:text-base truncate">{r.title || r.filename}</p>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="font-bold text-sm">{formatIDR(r.total_belanja)}</span>
+                  <Button size="sm" variant="ghost"
+                    className="h-8 w-8 rounded-xl p-0 text-muted-foreground hover:text-destructive"
+                    disabled={deleting === r.id}
+                    onClick={async () => { setDeleting(r.id); await onDelete(r.id); setDeleting(null); }}>
+                    {deleting === r.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+                  </Button>
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-1.5 shrink-0">
-                <span className="font-bold text-sm">{formatIDR(r.total_belanja)}</span>
-                <Button size="sm" variant="ghost"
-                  className="h-8 w-8 rounded-xl p-0 text-muted-foreground hover:text-destructive"
-                  disabled={deleting === r.id}
-                  onClick={async () => { setDeleting(r.id); await onDelete(r.id); setDeleting(null); }}>
-                  {deleting === r.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-                </Button>
+
+              {/* Meta info */}
+              <p className="text-xs text-muted-foreground mt-1">{date} · {time} · {r.items.length} item</p>
+
+              {/* People chips */}
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {r.people.map(p => (
+                  <span key={p.id} className="inline-flex items-center gap-1 text-xs bg-muted rounded-full px-2.5 py-1">
+                    <span className="h-2 w-2 rounded-full shrink-0" style={{ background: p.color }} />
+                    <span className="truncate max-w-[60px] sm:max-w-none">{p.name}</span>
+                    <span className="shrink-0 font-medium">· {formatIDR((r.person_totals as Record<string, number>)[p.id] ?? 0)}</span>
+                  </span>
+                ))}
               </div>
             </div>
 
             {/* Bottom row: action buttons */}
-            <div className="mt-3 pt-3 border-t border-border/40" style={{display:'flex', gap:'8px'}}>
-              <button
-                style={{flex:'0 0 calc(50% - 4px)', height:'36px', borderRadius:'999px', fontSize:'12px', fontWeight:600, border:'1px solid var(--border)', background:'var(--background)', color:'var(--foreground)', cursor:'pointer'}}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mt-3 pt-3 border-t border-border/40">
+              <Button
+                variant="outline"
+                className="flex-1 h-11 rounded-2xl text-sm font-bold shadow-[var(--shadow-soft)]"
                 onClick={() => onView(r)}
               >
                 Lihat Detail
-              </button>
+              </Button>
               {isRecorded ? (
-                <div style={{flex:'0 0 calc(50% - 4px)', display:'flex', alignItems:'center', justifyContent:'center', gap:'4px', fontSize:'12px', color:'#059669', fontWeight:600}}>
-                  <BookmarkCheck style={{width:'14px', height:'14px', flexShrink:0}} /> Sudah dicatat
-                </div>
+                <span className="inline-flex items-center justify-center gap-1.5 text-sm text-emerald-600 dark:text-emerald-400 font-bold px-3 h-11">
+                  <BookmarkCheck className="h-4 w-4 shrink-0" /> Sudah dicatat
+                </span>
               ) : (
-                <button
-                  style={{flex:'0 0 calc(50% - 4px)', height:'36px', borderRadius:'999px', fontSize:'12px', fontWeight:600, border:'1px solid rgba(139,92,246,0.4)', background:'transparent', color:'#a78bfa', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'4px', overflow:'hidden', boxSizing:'border-box'}}
+                <Button
+                  variant="outline"
+                  className="flex-1 h-11 rounded-2xl text-sm font-bold border-[#8b5cf6]/40 text-[#7c3aed] hover:bg-[#ede9fe]/50 dark:text-[#a78bfa] shadow-[var(--shadow-soft)]"
                   disabled={recording === r.id || myAmount === 0}
                   onClick={() => handleRecord(r)}
                 >
                   {recording === r.id
-                    ? <Loader2 style={{width:'12px', height:'12px', flexShrink:0}} className="animate-spin" />
-                    : <Wallet style={{width:'12px', height:'12px', flexShrink:0}} />}
-                  <span style={{overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>Catat ({formatIDR(myAmount)})</span>
-                </button>
+                    ? <Loader2 className="h-4 w-4 animate-spin mr-1.5" />
+                    : <Wallet className="h-4 w-4 mr-1.5 shrink-0" />}
+                  Catat ({formatIDR(myAmount)})
+                </Button>
               )}
             </div>
           </div>
@@ -895,19 +912,19 @@ function DetailModal({ record, isRecorded, onRecorded, onClose }: {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/40 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-card rounded-3xl border border-border/60 shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto"
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
+      <div className="bg-card rounded-t-3xl sm:rounded-3xl border border-border/60 shadow-2xl w-full sm:max-w-lg max-h-[90vh] sm:max-h-[85vh] overflow-y-auto"
         onClick={e => e.stopPropagation()}>
-        <div className="p-5 border-b border-border/60 flex items-start justify-between gap-3 sticky top-0 bg-card rounded-t-3xl">
-          <div>
-            <p className="font-bold text-base">{record.title || record.filename}</p>
+        <div className="p-4 sm:p-5 border-b border-border/60 flex items-start justify-between gap-3 sticky top-0 bg-card rounded-t-3xl sm:rounded-t-3xl">
+          <div className="min-w-0 flex-1">
+            <p className="font-bold text-sm sm:text-base truncate">{record.title || record.filename}</p>
             <p className="text-xs text-muted-foreground mt-0.5">{date} · {formatIDR(record.total_belanja)}</p>
           </div>
-          <button onClick={onClose} className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+          <button onClick={onClose} className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
             <X className="h-4 w-4" />
           </button>
         </div>
-        <div className="p-5 space-y-4">
+        <div className="p-4 sm:p-5 space-y-4">
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Detail Item</p>
             <div className="space-y-2">
@@ -915,7 +932,7 @@ function DetailModal({ record, isRecorded, onRecorded, onClose }: {
                 const assigned: string[] = (assignments[i] ?? []) as string[];
                 return (
                   <div key={i} className="flex items-start justify-between gap-2 text-sm py-2 border-b border-border/40 last:border-0">
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <p className="font-medium">{item.nama_barang}</p>
                       <div className="flex flex-wrap gap-1 mt-1">
                         {assigned.map(pid => {
@@ -930,7 +947,7 @@ function DetailModal({ record, isRecorded, onRecorded, onClose }: {
                         {assigned.length === 0 && <span className="text-xs text-muted-foreground italic">Tidak di-assign</span>}
                       </div>
                     </div>
-                    <span className="font-semibold shrink-0">{formatIDR(item.total_harga_barang)}</span>
+                    <span className="font-semibold shrink-0 text-sm">{formatIDR(item.total_harga_barang)}</span>
                   </div>
                 );
               })}
@@ -940,12 +957,12 @@ function DetailModal({ record, isRecorded, onRecorded, onClose }: {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Tagihan per Orang</p>
             <div className="space-y-2">
               {record.people.map(p => (
-                <div key={p.id} className="flex items-center justify-between rounded-2xl bg-muted/40 px-4 py-3">
+                <div key={p.id} className="flex items-center justify-between rounded-2xl bg-muted/40 px-3 sm:px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full" style={{ background: p.color }} />
+                    <span className="h-3 w-3 rounded-full shrink-0" style={{ background: p.color }} />
                     <span className="text-sm font-medium">{p.name}</span>
                   </div>
-                  <span className="font-bold">{formatIDR(personTotals[p.id] ?? 0)}</span>
+                  <span className="font-bold text-sm">{formatIDR(personTotals[p.id] ?? 0)}</span>
                 </div>
               ))}
             </div>
